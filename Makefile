@@ -15,4 +15,4 @@ barrier_test: barrier_test.o
 	$(CXX) $(CXXFLAGS) $(OPTFLAGS) -c -o $@ $<
 
 clean:
-	rm -rf *.o benchmark barriers barrier_test
+	rm -rf *.o benchmark barrier_test
