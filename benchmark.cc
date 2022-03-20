@@ -27,8 +27,9 @@ double timecount(std::vector<int>* order, size_t n){
         std::vector<int> indices = indexGen(n);
         std::vector<int> holds;
         clock_gettime(CLOCK_MONOTONIC, start);
-        for (int i = 0; i < 100; i++) { //this isn't the best way, but it's the only one i've found which doesn't just return 0 ns and 0 clock ticks
+        for (int i = 0; i < 50; i++) { //this isn't the best way, but it's the only one i've found which doesn't just return 0 ns and 0 clock ticks
                 holds.push_back((*order)[indices[i]]);
+                holds.push_back((*order)[indices[99-i]]);
         }
         clock_gettime(CLOCK_MONOTONIC, end);
 
