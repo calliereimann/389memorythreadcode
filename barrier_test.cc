@@ -81,15 +81,15 @@ void threadDissemination(int position, std::atomic<bool> flags[THREADC][2][ROUND
         std::chrono::milliseconds delay (rand()%30);
         std::this_thread::sleep_for(delay); //looks like a mess but is essentially the same four lines copied three times
         joindissemination(position, sense, parity, flags);
-        std::cout<<"thread: " + std::to_string(position) + ", barrier: 1\n";
+        std::cout<<"barrier: 1, thread: " + std::to_string(position) + "\n";
         delay = std::chrono::milliseconds{(rand()%70)};
         std::this_thread::sleep_for(delay);
         joindissemination(position, sense, parity, flags);
-        std::cout<<"thread: "+ std::to_string(position) + ", barrier: 2\n";
+        std::cout<<"barrier: 2, thread: " + std::to_string(position) + "\n";
         delay = std::chrono::milliseconds{(rand()%70)};
         std::this_thread::sleep_for(delay);
         joindissemination( position, sense, parity, flags);
-        std::cout<<"thread: " + std::to_string(position) + ", barrier: 3\n";
+        std::cout<<"barrier: 3, thread: " + std::to_string(position) + "\n";
 }
 
 void disseminationtest(){

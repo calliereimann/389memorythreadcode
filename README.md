@@ -27,8 +27,13 @@ Note: I do not optimize any of these threaded files - the optimization completel
 
 The central barrier was implemented essentially identically to how we set it up in class - I needed to make sense also considered "atomic" in order to get the code to compile, but once I did (and I figured out how to pass references into threads) it worked quite well.
 
-The central barrier is correct - in testing, there has never been any out-of-order effects. This is because every variable related to the behavior of the barrier is an atomic and so there's no effects which could lead to disasters. Note: The printing might get screwed up from time to time, that's just the fault of cout transmitting each chunk in pieces. notably, the first chunk of any line in the second barrier will always appear after the last chunk in the first barrier.
+The central barrier is correct - in testing, there has never been any out-of-order effects. This is because every variable related to the behavior of the barrier is an atomic and so there's no effects which could lead to disasters.
 
-The dissemination barrier is also correct. I needed to move sense and parity to be local per thread in order to make it work, since there's not really a priveliged "last one to arrive" to flip them, so i just had everyone have their own that they personally flipped. As per the reasoning in the slides, this barrier is now totally correct.
+The dissemination barrier is also correct. I needed to move sense and parity to be local per thread in order to make it work, since there's not really a privileged "last one to arrive" to flip them, so i just had everyone have their own that they personally flipped. As per the reasoning in the slides, this barrier is now totally correct.
 
 I don't have a good graph available because I don't know how to measure this sort of thing, but if I had to guess, central barrier has essentially a flat line overhead as it's all down to a single value, while dissemination barrier has n log n overhead because it creates THREAD * log(THREAD) * 2 different flags in a bool array.
+
+
+While Central Barrier is much easier to implement, it scales pretty poorly. Sure, in terms of overhead, it's pretty acceptable, but the time it takes gets longer as threads collide over and over in their attempt to reach the single point of access. It is very useful for situations in which thread count shifts, though I'm not actually sure how to set that up so I wouldn't be able to make the best use of it.
+
+Meanwhile, Dissemination Barrier is somewhat more troublesome, but not too much. It has pretty good spatial efficiency, and (almost) no collisions between values, so I think I'd be more likely to use it for big projects. 
