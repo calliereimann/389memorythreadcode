@@ -2,7 +2,7 @@ Memory Programming Assignment
 
 Benchmark Assignment:
 
-My program
+My program (compilation instructions: type make, and then use ./benchmark) had some bumps getting into a place where it would work properly.
 
 ![Memory Benchmark Graph](https://github.com/calliereimann/389memorythreadcode/blob/main/buffersize.png?raw=true)
 
@@ -18,4 +18,7 @@ The computer I used for my tests has a	"Intel(R) Core(TM) i7-1065G7 CPU", which 
 
 Multithreading Assignment:
 
-I had some trouble coming up with a way of testing these things at first, but the (somewhat) clunky method I came up with is the best that I have. 
+I had some trouble coming up with a way of testing these things at first, but the (somewhat) clunky method I came up with is the best that I have.
+I apologize for the incompleteness: this is my literal first time using the <thread> library, and so a lot of time I would have had to work on the assignment was spent instead trying to understand how anything actually worked in the first place.
+
+The central barrier was implemented essentially identically to how we set it up in class - I needed to make sense also considered "atomic" in order to get the code to compile, but once I did (and i figured out how to pass references into threads) it worked quite well.

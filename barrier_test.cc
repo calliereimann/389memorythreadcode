@@ -6,9 +6,9 @@
 #include <cassert>
 #include <vector>
 
-std::atomic<int> counter = 1;
+std::atomic<int> counter = 1; //some fun constants and global atomics
 const int THREADC = 4;
-const int ROUNDS = log2(THREADC);
+const int ROUNDS = log2(THREADC); //dissemination wouldn't work until i pulled these out into being almost globals
 
 
 using id_type = std::thread::id;
@@ -76,9 +76,9 @@ id_type joindissemination(id_type id, int threadc, int position, std::atomic<boo
         return id;
 }
 
-void threadDissemination(int threadc, int position, std::atomic<bool> &sense, std::atomic<int> &parity, std::atomic<bool> flags[][2][ROUNDS]){
+void threadDissemination(int threadc, int position, std::atomic<bool> &sense, std::atomic<int> &parity, std::atomic<bool> flags[][2][ROUNDS]){ //"wait, join barrier, wait, join barrier, repeat"
         std::chrono::milliseconds delay (rand()%30);
-        std::this_thread::sleep_for(delay);
+        std::this_thread::sleep_for(delay); //looks like a mess but is essentially the same four lines copied three times
         joindissemination(std::this_thread::get_id(), threadc, position, sense, parity, flags);
         std::cout<<"thread "<<std::this_thread::get_id()<<" through first barrier\n";
         delay = std::chrono::milliseconds{(rand()%70)};
@@ -127,8 +127,8 @@ void disseminationtest(){
 
 int main() {
         srand(time(NULL));
-        //std::cout<<"Central Barrier: \n";
-        //centraltest();
-        std::cout<<"Dissemination Barrier: \n";
+        std::cout<<"Central Barrier: \n";
+        centraltest();
+        std::cout<<"\n Dissemination Barrier: \n";
         disseminationtest();
 }
