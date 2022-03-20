@@ -7,7 +7,7 @@
 #include <vector>
 
 std::atomic<int> counter = 1; //some fun constants and global atomics
-const int THREADC = 5;
+const int THREADC = 20;
 const int ROUNDS = log2(THREADC)+1; //dissemination wouldn't work until i pulled these out into being almost globals
 
 
@@ -30,16 +30,16 @@ void threadCentral(int threadc, std::atomic<bool> &sense){
         std::this_thread::sleep_for(delay);
         joincentral(std::this_thread::get_id(), threadc, sense);
         delay = std::chrono::milliseconds{rand()%50};
-        std::cout<<"thread "<<std::this_thread::get_id()<<" through first barrier\n";
+        std::cout<<"thread barrier 1\n";//<<std::this_thread::get_id()<<" through first barrier\n";
         delay = std::chrono::milliseconds{(rand()%50)};
         std::this_thread::sleep_for(delay);
         joincentral(std::this_thread::get_id(), threadc, sense);
         delay = std::chrono::milliseconds{(rand()%50)};
-        std::cout<<"thread "<<std::this_thread::get_id()<<" through second barrier\n";
+        std::cout<<"thread barrier 2\n";//<<std::this_thread::get_id()<<" through second barrier\n";
         delay = std::chrono::milliseconds{(rand()%50)};
         std::this_thread::sleep_for(delay);
         joincentral(std::this_thread::get_id(), threadc, sense);
-        std::cout<<"thread "<<std::this_thread::get_id()<<" through third barrier\n";
+        std::cout<<"thread barrier 3\n";//<<std::this_thread::get_id()<<" through third barrier\n";
 }
 
 void centraltest(){
@@ -67,13 +67,12 @@ void centraltest(){
          */
 }
 
-id_type joindissemination(id_type id, int position, std::atomic<bool> &sense, std::atomic<int> &parity, std::atomic<bool> flags[THREADC][2][ROUNDS]){
+void joindissemination(int position, std::atomic<bool> &sense, std::atomic<int> &parity, std::atomic<bool> flags[THREADC][2][ROUNDS]){
         for (int i = 0; i < ROUNDS; i++) {
                 int partner = (position + (2^i)) % THREADC;
                 flags[partner][parity][i] = !sense;
                 while (flags[position][parity][i] == sense) { /* spin */ }
         } if (parity == 1) { sense = !sense;} parity = 1 - parity;
-        return id;
 }
 
 void threadDissemination(int position, std::atomic<bool> flags[THREADC][2][ROUNDS]){ //"wait, join barrier, wait, join barrier, repeat"
@@ -81,16 +80,16 @@ void threadDissemination(int position, std::atomic<bool> flags[THREADC][2][ROUND
         std::atomic<int> parity = 0;
         std::chrono::milliseconds delay (rand()%30);
         std::this_thread::sleep_for(delay); //looks like a mess but is essentially the same four lines copied three times
-        joindissemination(std::this_thread::get_id(), position, sense, parity, flags);
-        std::cout<<"1thread "<<std::this_thread::get_id()<<" through first barrier\n";
+        joindissemination(position, sense, parity, flags);
+        std::cout<<"thread: " + std::to_string(position) + ", barrier: 1\n";
         delay = std::chrono::milliseconds{(rand()%70)};
         std::this_thread::sleep_for(delay);
-        joindissemination(std::this_thread::get_id(), position, sense, parity, flags);
-        std::cout<<"2thread "<<std::this_thread::get_id()<<" through second barrier\n";
+        joindissemination(position, sense, parity, flags);
+        std::cout<<"thread: "+ std::to_string(position) + ", barrier: 2\n";
         delay = std::chrono::milliseconds{(rand()%70)};
         std::this_thread::sleep_for(delay);
-        joindissemination(std::this_thread::get_id(), position, sense, parity, flags);
-        std::cout<<"3thread "<<std::this_thread::get_id()<<" through third barrier\n";
+        joindissemination( position, sense, parity, flags);
+        std::cout<<"thread: " + std::to_string(position) + ", barrier: 3\n";
 }
 
 void disseminationtest(){
